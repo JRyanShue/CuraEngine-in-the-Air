@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 RUN apt-get -y update
-RUN apt-get -y install git wget autoconf automake libtool curl make g++ unzip cmake python3 python3-dev python3-sip-dev
+RUN apt-get -y install git wget autoconf automake libtool curl make g++ unzip cmake python3 python3-dev python3-sip-dev python3-pip
 # for libArcus
 RUN apt-get -y install build-essential protobuf-compiler libprotoc-dev libprotobuf-dev
 # RUN apt-get -y install build-essentials cmake python3-dev python3-sip-dev protobuf-compiler libprotoc-dev libprotobuf-dev
@@ -31,18 +31,18 @@ WORKDIR "/ZengerEngine"
 # RUN git checkout
 RUN mkdir build && cd build && cmake .. && make
 
-# # C++ portion installation done
-# # insert python and other scripts within the same working directory, install dependencies
-# WORKDIR /app
-# COPY requirements.txt .
-# RUN pip install -r requirements.txt
-# COPY app.py .
-# COPY resources/ .
-# COPY static/ .
-# COPY templates/ .
+# C++ portion installation done
+# insert python and other scripts within the same working directory, install dependencies
+WORKDIR /app
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
+COPY main.py .
+COPY resources/ .
+COPY static/ .
+COPY templates/ .
 
-# # Specify the command to run on container start
-# CMD [ "python", "./app.py" ]
+# Specify the command to run on container start
+CMD [ "python3", "./main.py" ]
 
 # Set base image (host OS) <- this used to be at the beginning of the python stuff
 # FROM python:3.8-alpine
