@@ -7,7 +7,7 @@ app = Flask(__name__)
 print("Flask app initialized.")
 
 # initiate class var: STL path
-STL_path = "/root/app/Test-STLs/5mm_Cube.stl"
+STL_path = "/app/Test-STLs/5mm_Cube.stl"
 
 
 # main page
@@ -19,13 +19,15 @@ def main():
     return render_template('main.html')
     
 
+# removed /root everywhere so that a plain / denotes the root. If issues with finding items, this could be the cause (revert if needed)
+
 # get gcode
 @app.route('/get_gcode')
 def get_gcode():
     global STL_path
-    cli_commands.test_gcode(input=STL_path, output="/root/app/test.gcode") # output: app folder in the root directory
+    cli_commands.test_gcode(input=STL_path, output="/app/test.gcode") # output: app folder in the root directory
     # return gcode (proof of concept)
-    with open("/root/app/test.gcode", "r") as f:
+    with open("/app/test.gcode", "r") as f:
         data = f.read()
     print("Got gcode.")
     return(data)
