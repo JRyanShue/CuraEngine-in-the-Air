@@ -35,15 +35,20 @@ RUN mkdir build && cd build && cmake .. && make
 # C++ portion installation done
 # insert python and other scripts within the same working directory, install dependencies
 WORKDIR /app
-COPY requirements.txt .
+
+# Copy requirements.txt into the directory and install requirements
+RUN wget https://raw.githubusercontent.com/JRyanShue/ZengerCuraEngine-in-the-Air/master/requirements.txt
 RUN pip3 install -r requirements.txt
-COPY main.py .
-COPY resources/ .
-COPY static/ .
-COPY templates/ .
+
+# Get the web app files (and central application)
+RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git
+
+# Get the required base resources for slicing
+RUN git clone https://github.com/JRyanShue/ZengerEngine-Presets.git
+RUN git clone https://github.com/JRyanShue/Test-STLs.git
 
 # Specify the command to run on container start
-CMD [ "python3", "./main.py" ]
+CMD [ "python3", "./ZengerCuraEngine-in-the-Air/main.py" ]
 
 # Set base image (host OS) <- this used to be at the beginning of the python stuff
 # FROM python:3.8-alpine

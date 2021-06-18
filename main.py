@@ -1,16 +1,27 @@
 import subprocess
+from flask import Flask, render_template, Response
+import cli_commands
 
-print("Got subprocess import.")
-print("Running slicer.")
+# Initialize the Flask app
+app = Flask(__name__)
+print("Flask app initialized.")
 
-# run a test slicing program
-# app (containing the python app) is the directory when run
-subprocess.run("cd .. && cd /ZengerEngine/build && "
-    "wget https://raw.githubusercontent.com/Ultimaker/Cura/4.10/resources/definitions/fdmprinter.def.json && "
-    "wget https://raw.githubusercontent.com/Ultimaker/Cura/4.10/resources/definitions/fdmextruder.def.json && "
-    "wget https://raw.githubusercontent.com/Ultimaker/Cura/4.10/resources/definitions/prusa_i3.def.json && "
-    "wget https://raw.githubusercontent.com/KrisRoofe/curaengine-dockerfile/master/herringbone-gear-large.stl && "
-    "./CuraEngine slice -p -j ./fdmprinter.def.json -j prusa_i3.def.json -l herringbone-gear-large.stl -o herringbone-gear-large.gcode"
-    , shell=True)
+# main page
+@app.route('/')
+def main():
+    return render_template('main.html')
 
-print("Slicer run.")
+# get gcode
+@app.route('/get_gcode')
+def get_gcode():
+    cli_commands.test_gcode(output="/app/test.gcode") # output: app folder in the root directory
+    # return gcode (proof of concept)
+    with open("/test.gcode", "r") as f:
+        data = f.read()
+    print("Got gcode.")
+    return("GCODE: " + data)
+
+
+if __name__ == "__main__":
+   app.run(host='0.0.0.0', port=5000)
+   print("Web app running.")
