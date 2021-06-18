@@ -1,3 +1,4 @@
+# used to be ubuntu 18.04
 FROM ubuntu:18.04
 RUN apt-get -y update
 RUN apt-get -y install git wget autoconf automake libtool curl make g++ unzip cmake python3 python3-dev python3-sip-dev python3-pip

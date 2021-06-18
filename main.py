@@ -4,6 +4,7 @@ print("Got subprocess import.")
 print("Running slicer.")
 
 # run a test slicing program
+# app (containing the python app) is the directory when run
 subprocess.run("cd .. && cd /ZengerEngine/build && "
     "wget https://raw.githubusercontent.com/Ultimaker/Cura/4.10/resources/definitions/fdmprinter.def.json && "
     "wget https://raw.githubusercontent.com/Ultimaker/Cura/4.10/resources/definitions/fdmextruder.def.json && "
