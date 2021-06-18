@@ -19,7 +19,7 @@ def get_gcode():
     with open("/root/app/test.gcode", "r") as f:
         data = f.read()
     print("Got gcode.")
-    return("GCODE: " + data)
+    return(data)
 
 
 if __name__ == "__main__":
