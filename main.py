@@ -16,7 +16,7 @@ def main():
 def get_gcode():
     cli_commands.test_gcode(output="/app/test.gcode") # output: app folder in the root directory
     # return gcode (proof of concept)
-    with open("/test.gcode", "r") as f:
+    with open("/app/test.gcode", "r") as f:
         data = f.read()
     print("Got gcode.")
     return("GCODE: " + data)
