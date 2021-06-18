@@ -11,7 +11,7 @@ STL_path = "/root/app/Test-STLs/5mm_Cube.stl"
 
 
 # main page
-@app.route('/')
+@app.route('/', methods=["GET", "POST"])
 def main():
     if request.method == 'POST':
         global STL_path
