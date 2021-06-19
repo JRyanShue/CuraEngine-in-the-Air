@@ -42,12 +42,19 @@ RUN pip3 install -r requirements.txt
 
 # Get the web app files (and central application)
 RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git
+RUN cd ZengerCuraEngine-in-the-Air && git pull
 
 # Get the required base resources for slicing
+WORKDIR /app
 RUN git clone https://github.com/JRyanShue/ZengerEngine-Presets.git
+RUN cd ZengerEngine-Presets && git pull
+
+WORKDIR /app
 RUN git clone https://github.com/JRyanShue/Test-STLs.git
+RUN cd Test-STLs && git pull
 
 # Specify the command to run on container start
+WORKDIR /app
 CMD [ "python3", "./ZengerCuraEngine-in-the-Air/main.py" ]
 
 # Set base image (host OS) <- this used to be at the beginning of the python stuff
