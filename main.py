@@ -38,8 +38,8 @@ def get_gcode():
 
 @app.route('/upload_test', methods=['GET', 'POST'])
 def upload_file():
+    success = "no file uploaded"
     if request.method == 'POST':
-        success = "no file uploaded"
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
