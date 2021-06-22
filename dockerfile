@@ -55,6 +55,8 @@ RUN cd Test-STLs && git pull
 
 # Specify the command to run on container start
 WORKDIR /app
+# To hold file uploads, etc:
+RUN mkdir resources
 CMD [ "python3", "./ZengerCuraEngine-in-the-Air/main.py" ]
 
 # Set base image (host OS) <- this used to be at the beginning of the python stuff
