@@ -39,6 +39,7 @@ def get_gcode():
 @app.route('/upload_test', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
+        success = "no file uploaded"
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
@@ -52,8 +53,9 @@ def upload_file():
         if file and webapp_utils.allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('download_file', name=filename))
-    return '''
+            # return redirect(url_for('download_file', name=filename))
+            success = "file found." + app.config['UPLOAD_FOLDER'] + filename
+    return success + '''
     <!doctype html>
     <title>Upload new File</title>
     <h1>Upload new File</h1>

@@ -37,11 +37,11 @@ RUN mkdir build && cd build && cmake .. && make
 WORKDIR /app
 
 # Copy requirements.txt into the directory and install requirements
-RUN wget https://raw.githubusercontent.com/JRyanShue/ZengerCuraEngine-in-the-Air/master/requirements.txt
+RUN wget https://raw.githubusercontent.com/JRyanShue/ZengerCuraEngine-in-the-Air/master/requirements.txt #
 RUN pip3 install -r requirements.txt
 
 # Get the web app files (and central application)
-RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git
+RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #
 RUN cd ZengerCuraEngine-in-the-Air && git pull
 
 # Get the required base resources for slicing
