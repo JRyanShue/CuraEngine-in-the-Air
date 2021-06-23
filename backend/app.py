@@ -1,6 +1,6 @@
 from flask import Flask, render_template, Response, request, flash, url_for, redirect
 from werkzeug.utils import secure_filename
-import cli_commands.py
+import cli_commands
 import webapp_utils
 
 # initiate class var: STL path
