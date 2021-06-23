@@ -9,7 +9,6 @@ RUN apt-get -y install build-essential protobuf-compiler libprotoc-dev libprotob
 RUN wget https://github.com/google/protobuf/releases/download/v3.5.0/protobuf-all-3.5.0.zip
 
 RUN git clone https://github.com/Ultimaker/libArcus.git
-RUN git clone https://github.com/JRyanShue/ZengerEngine.git
 
 # install protobuf
 RUN unzip protobuf-all-3.5.0.zip
@@ -26,6 +25,10 @@ RUN git pull
 RUN git checkout 4.4
 RUN mkdir build && cd build && cmake .. && make -j4 && make install
 
+# Pull zengerengine code from Github (lower than other operations because it will be modified)
+WORKDIR "/"
+RUN git clone https://github.com/JRyanShue/ZengerEngine.git
+
 # install zengerengine
 WORKDIR "/ZengerEngine"
 # RUN git pull
@@ -41,7 +44,7 @@ RUN wget https://raw.githubusercontent.com/JRyanShue/ZengerCuraEngine-in-the-Air
 RUN pip3 install -r requirements.txt
 
 # Get the web app files (and central application)
-RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #
+RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #s
 RUN cd ZengerCuraEngine-in-the-Air && git pull
 
 # Get the required base resources for slicing
