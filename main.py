@@ -9,4 +9,5 @@ It will serve a Flask application on port 5000, and a React app on port 3000
 
 # Run subproccesses
 subprocess.run(["python3", "/backend/app.py"])
-subprocess.run("cd frontend/my-app && npm start")
+subprocess.run(["cd", "frontend/my-app"])
+subprocess.run(["npm", "start"])

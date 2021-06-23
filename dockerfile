@@ -36,17 +36,6 @@ WORKDIR "/ZengerEngine"
 RUN mkdir build && cd build && cmake .. && make
 
 # C++ portion installation done
-# insert python and other scripts within the same working directory, install dependencies
-WORKDIR /app
-
-# Copy requirements.txt into the directory and install requirements
-RUN wget https://raw.githubusercontent.com/JRyanShue/ZengerCuraEngine-in-the-Air/master/requirements.txt
-RUN pip3 install -r requirements.txt
-
-# Get the web app files (and central application)
-RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #saaa
-RUN cd ZengerCuraEngine-in-the-Air && git pull
-
 # Get the required base resources for slicing
 WORKDIR /app
 RUN git clone https://github.com/JRyanShue/ZengerEngine-Presets.git
@@ -60,6 +49,17 @@ RUN cd Test-STLs && git pull
 WORKDIR /app
 # To hold file uploads, etc:
 RUN mkdir resources
+
+# insert python and other scripts within the same working directory, install dependencies
+WORKDIR /app
+# Get the web app files (and central application)
+RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #saaaa
+RUN cd ZengerCuraEngine-in-the-Air && git pull
+
+# Copy requirements.txt into the directory and install requirements
+RUN wget https://raw.githubusercontent.com/JRyanShue/ZengerCuraEngine-in-the-Air/master/requirements.txt
+RUN pip3 install -r requirements.txt
+
 CMD [ "python3", "./ZengerCuraEngine-in-the-Air/main.py" ]
 
 # Set base image (host OS) <- this used to be at the beginning of the python stuff
