@@ -53,7 +53,7 @@ RUN mkdir resources
 # insert python and other scripts within the same working directory, install dependencies
 WORKDIR /app
 # Get the web app files (and central application)
-RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #saaaa
+RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #saaaaaa
 RUN cd ZengerCuraEngine-in-the-Air && git pull
 
 # Copy requirements.txt into the directory and install requirements
