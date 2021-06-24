@@ -42,7 +42,7 @@ RUN git clone https://github.com/JRyanShue/ZengerEngine-Presets.git
 RUN cd ZengerEngine-Presets && git pull
 
 WORKDIR /app
-RUN git clone https://github.com/JRyanShue/Test-STLs.gita
+RUN git clone https://github.com/JRyanShue/Test-STLs.git
 RUN cd Test-STLs && git pull
 
 # Specify the command to run on container start
@@ -55,6 +55,10 @@ WORKDIR /app
 # Copy requirements.txt into the directory and install requirements
 RUN wget https://raw.githubusercontent.com/JRyanShue/ZengerCuraEngine-in-the-Air/master/requirements.txt
 RUN pip3 install -r requirements.txt
+
+RUN apt-get install curl
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
+RUN apt-get -y install nodejs
 
 # Get the web app files (and central application)
 RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #saaaaaaaaa
