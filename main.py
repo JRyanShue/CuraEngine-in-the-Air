@@ -8,6 +8,7 @@ It will serve a Flask application on port 5000, and a React app on port 3000
 """
 
 # Run subproccesses
-subprocess.run(["python3", "./ZengerCuraEngine-in-the-Air/backend/app.py"])
-subprocess.run(["cd", "frontend/my-app"])
+
+subprocess.run(["cd", "./ZengerCuraEngine-in-the-Air/frontend/my-app"])
 subprocess.run(["npm", "start"])
+subprocess.run(["python3", "./ZengerCuraEngine-in-the-Air/backend/app.py"])
