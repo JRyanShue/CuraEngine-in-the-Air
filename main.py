@@ -19,7 +19,7 @@ def run_flask_app():
 
 # subprocess.run("cd ./ZengerCuraEngine-in-the-Air/frontend/my-app", shell=True)
 x = threading.Thread(target=run_react_app, args=())
-x.start()
+# x.start()
 
 y = threading.Thread(target=run_flask_app, args=())
 y.start()
