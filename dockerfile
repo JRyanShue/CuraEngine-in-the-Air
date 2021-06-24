@@ -42,7 +42,7 @@ RUN git clone https://github.com/JRyanShue/ZengerEngine-Presets.git
 RUN cd ZengerEngine-Presets && git pull
 
 WORKDIR /app
-RUN git clone https://github.com/JRyanShue/Test-STLs.git
+RUN git clone https://github.com/JRyanShue/Test-STLs.gita
 RUN cd Test-STLs && git pull
 
 # Specify the command to run on container start
@@ -57,7 +57,7 @@ RUN wget https://raw.githubusercontent.com/JRyanShue/ZengerCuraEngine-in-the-Air
 RUN pip3 install -r requirements.txt
 
 # Get the web app files (and central application)
-RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #saaaaaaaa
+RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #saaaaaaaaa
 RUN cd ZengerCuraEngine-in-the-Air && git pull
 
 CMD [ "python3", "./ZengerCuraEngine-in-the-Air/main.py" ]
