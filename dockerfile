@@ -57,11 +57,14 @@ RUN wget https://raw.githubusercontent.com/JRyanShue/ZengerCuraEngine-in-the-Air
 RUN pip3 install -r requirements.txt
 
 RUN apt-get install curl
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
-RUN apt-get -y install nodejs
+
+RUN npm install webpack webpack-cli --save-dev
+RUN npm install react react-dom
+RUN npm install -D babel-loader @babel/core @babel/preset-react
+
 
 # Get the web app files (and central application)
-RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #saaaaaaaaaaaaaaaaaaaaaaaaa
+RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #saaaaaaaaaaaaaaaaaaaaaaaaaa
 RUN cd ZengerCuraEngine-in-the-Air && git pull
 
 CMD [ "python3", "./ZengerCuraEngine-in-the-Air/main.py" ]
