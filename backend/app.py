@@ -35,6 +35,12 @@ def get_gcode():
     return(data)
 
 
+# proof of concept
+@app.route('/index')
+def index():
+    return render_template('index.html')
+
+
 @app.route('/upload_test', methods=['GET', 'POST'])
 def upload_file():
     success = "no file uploaded"
