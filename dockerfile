@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 RUN apt-get -y update
 RUN apt-get -y install git wget autoconf automake libtool curl make g++ unzip cmake python3 python3-dev python3-sip-dev python3-pip
 # for libArcus
-RUN apt-get -y install build-essential protobuf-compiler libprotoc-dev libprotobuf-dev
+RUN apt-get -y install nodejs build-essential protobuf-compiler libprotoc-dev libprotobuf-dev
 # RUN apt-get -y install build-essentials cmake python3-dev python3-sip-dev protobuf-compiler libprotoc-dev libprotobuf-dev
 
 RUN wget https://github.com/google/protobuf/releases/download/v3.5.0/protobuf-all-3.5.0.zip
@@ -61,7 +61,7 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
 RUN apt-get -y install nodejs
 
 # Get the web app files (and central application)
-RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #saaaaaaaaaaaaaaaaaaa
+RUN git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git #saaaaaaaaaaaaaaaaaaaaa
 RUN cd ZengerCuraEngine-in-the-Air && git pull
 
 CMD [ "python3", "./ZengerCuraEngine-in-the-Air/main.py" ]
