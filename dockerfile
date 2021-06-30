@@ -61,6 +61,10 @@ RUN apt-get install curl
 RUN npm install webpack webpack-cli --save-dev
 RUN npm install react react-dom
 RUN npm install -D babel-loader @babel/core @babel/preset-react
+RUN npm install -g yarn
+RUN yarn global add create-react-app react-scripts-cssmodules
+RUN npx create-react-app frontend
+
 
 
 # Get the web app files (and central application)
