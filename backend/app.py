@@ -19,7 +19,7 @@ def main():
         global STL_path  # variable from outer scope
         STL_path = request.form.get('STL_path')  # access STL_path from form
     return render_template('main.html')
-    
+
 
 # removed /root everywhere so that a plain / denotes the root. If issues with finding items, this could be the cause (revert if needed)
 
@@ -69,6 +69,15 @@ def upload_file():
       <input type=submit value=Upload>
     </form>
     '''
+
+# React page
+@app.route('/react', methods=["GET", "POST"])
+def react():
+    if request.method == 'POST':
+        global STL_path  # variable from outer scope
+        STL_path = request.form.get('STL_path')  # access STL_path from form
+        print("post successful.")
+    return render_template("index.html", flask_token="Hello   world")
 
 
 if __name__ == "__main__":
