@@ -27,6 +27,8 @@ cd /app
 sudo git clone https://github.com/JRyanShue/ZengerEngine-Presets.git
 cd ZengerEngine-Presets
 sudo git pull
+cd /
+cd app
 sudo git clone https://github.com/JRyanShue/Test-STLs.git
 cd Test-STLs
 sudo git pull

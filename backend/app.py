@@ -83,5 +83,6 @@ def react():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80, debug=True)
+    print("Running v1.")  # Use to track code updates across machines/environments. 
+    app.run(host='0.0.0.0', port=80)  # , debug=True
     print("Web app terminated.")
