@@ -2,6 +2,7 @@ from flask import Flask, render_template, Response, request, flash, url_for, red
 from werkzeug.utils import secure_filename
 import cli_commands
 import webapp_utils
+import os, subprocess
 
 # initiate class var: STL path
 STL_path = "/app/Test-STLs/5mm_Cube.stl"
@@ -38,7 +39,8 @@ def get_gcode():
 # proof of concept
 @app.route('/index')
 def index():
-    return render_template('index.html')
+    subprocess.run("cd Zenger-Writer-Frontend/editor", shell=True)
+    return render_template('Zenger-Writer-Frontend/editor/index.html')
 
 
 @app.route('/upload_test', methods=['GET', 'POST'])
@@ -77,9 +79,9 @@ def react():
         global STL_path  # variable from outer scope
         STL_path = request.form.get('STL_path')  # access STL_path from form
         print("post successful.")
-    return render_template("index.html", flask_token="Hello   world")
+    return render_template("Zenger-Writer-Frontend/editor/index.html", flask_token="Hello   world")
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)
     print("Web app terminated.")
