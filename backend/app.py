@@ -8,6 +8,8 @@ import json
 
 # initiate class var: STL path
 STL_path = "/app/Test-STLs/5mm_Cube.stl"
+Master_STL_path = "/app/Master.stl"
+Master_gcode_path = "/app/Master.gcode"
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -27,13 +29,15 @@ def main():
 
 # removed /root everywhere so that a plain / denotes the root. If issues with finding items, this could be the cause (revert if needed)
 
-# get gcode
 @app.route('/get_gcode', methods=["GET", "POST", "PUT"])  # PUT for placing STL at URL
 def get_gcode():
-    global STL_path  # variable from outer scope
-    cli_commands.test_gcode(input=STL_path, output="/app/test.gcode") # output: app folder in the root directory
-    # return gcode (proof of concept)
-    with open("/app/test.gcode", "r") as f:
+
+    """
+    Function accesses saved gcode and returns it to the client
+    """
+
+    # return gcode
+    with open(Master_gcode_path, "r") as f:
         data = f.read()
     resp = make_response(data) 
     resp.headers['Access-Control-Allow-Origin'] = 'http://172.18.122.122:8080'  # RESTRICT ACCESS LATER
@@ -41,57 +45,32 @@ def get_gcode():
     return(resp)
 
 
-# put STL
 @app.route('/put_stl', methods=["GET", "POST", "PUT"])
 def put_stl():
-    print("---------------------------")
-    # print(request.files['file'].filename) 
 
-    print("---------------------------")
-    print("asd;fjadf")
-    print("qrwerq", request.method)
+    # request.form holds non-file key-value pairs
+    # request.files holds all filefield data
+    # request.files.get("stl") returns the STL, of type werkzeug.FileStorage
+    # request.form.get("action") returns the action to take (string)
 
-    print("TYPE:", type(request.form))
-    print(request.form)
-    print("TYPE:", type(request.files))
-    print(request.files)
+    """
+    This function takes in a FormData which includes JSON as well as the STL for slicing. 
+    It slices the STL with the given settings, and then writes thie gcode to a specified path.
+    /get_gcode is used to access this path and return the gcode to the client.
+    """
 
-    # HANDLING FORMDATA
-    print("STL:", request.files.get("stl"))
-    print("request.get_data.form.get(int)", request.get_data.form.get("int"))
-    print("request.form.get(int)", request.form.get("int"))
+    if request.method == "POST":  # Slice and write STL
 
+        # Save input STL to proper format (default buffer size)
+        request.files.get("stl").save(Master_STL_path)
 
-    bytesdata = request.get_data()
-    print(bytesdata)
-    print("type:", type(bytesdata))
-    stringdata = bytesdata.decode('utf8').replace("'", '"')
-    print(stringdata, ", TYPE:", type(stringdata))
-    jsondata = json.loads(stringdata)
-    print(jsondata, ", TYPE:", type(jsondata))
-    print(jsondata["stl"])
-    # if request.method == "GET":
-    #     print("req is get")
-    #     resp = Response()
-    #     resp.headers["Access-Control-Allow-Origin"] = "*"
-    #     resp.set_data("request.get_data()")
-    #     # print(request.get_json())  # parse as JSON
-    #     return resp
-    if request.method == "POST":
-        resp = Response()
+        # Slice
+        cli_commands.test_gcode(input=Master_STL_path, output=Master_gcode_path)
+
+        # Return an "OK" response
+        resp = Response(status=200)
         resp.headers["Access-Control-Allow-Origin"] = "*"
-        resp.set_data("request.get_json()")
-        # print(request.get_json())  # parse as JSON
         return resp
-    # white = ["http://172.18.122.122:8080/editor/", "http://172.18.122.122:8080"]
-    # req = request.get_json()
-    # resp = make_response(request.files)
-    # resp.headers['Access-Control-Allow-Origin'] = 'http://172.18.122.122:8080'  # RESTRICT ACCESS LATER
-    # print("Displaying STL...")
-    # if req:
-    #     return(req)
-    # else:
-    #     return("resp")
 
 
 # proof of concept
