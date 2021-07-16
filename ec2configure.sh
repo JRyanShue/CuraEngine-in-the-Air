@@ -38,9 +38,18 @@ sudo mkdir resources  # unused
 sudo wget https://raw.githubusercontent.com/JRyanShue/ZengerCuraEngine-in-the-Air/master/requirements.txt
 sudo pip3 install -r requirements.txt
 sudo apt-get install curl
-sudo apt-get -y npm  # add JS stuff
+
 sudo git clone https://github.com/JRyanShue/ZengerCuraEngine-in-the-Air.git
 cd ZengerCuraEngine-in-the-Air
 sudo git pull
 cd ..
-sudo python3 ./ZengerCuraEngine-in-the-Air/main.py
+
+# JS
+cd /
+cd app
+sudo apt-get -y install npm  # add JS stuff
+sudo npm install --global http-server
+sudo git clone https://github.com/JRyanShue/Zenger-Writer-Frontend.git
+cd Zenger-Writer-Frontend
+sudo git pull
+# sudo python3 ./ZengerCuraEngine-in-the-Air/main.py

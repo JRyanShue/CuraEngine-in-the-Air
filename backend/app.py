@@ -1,14 +1,17 @@
-from flask import Flask, render_template, Response, request, flash, url_for, redirect
+from flask import Flask, render_template, Response, request, flash, url_for, redirect, make_response
+from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import cli_commands
 import webapp_utils
 import os, subprocess
+import json
 
 # initiate class var: STL path
 STL_path = "/app/Test-STLs/5mm_Cube.stl"
 
 # Initialize the Flask app
 app = Flask(__name__)
+CORS(app)
 app.config['UPLOAD_FOLDER'] = webapp_utils.UPLOAD_FOLDER
 print("Flask app initialized.")
 
@@ -25,15 +28,54 @@ def main():
 # removed /root everywhere so that a plain / denotes the root. If issues with finding items, this could be the cause (revert if needed)
 
 # get gcode
-@app.route('/get_gcode')
+@app.route('/get_gcode', methods=["GET", "POST", "PUT"])  # PUT for placing STL at URL
 def get_gcode():
     global STL_path  # variable from outer scope
     cli_commands.test_gcode(input=STL_path, output="/app/test.gcode") # output: app folder in the root directory
     # return gcode (proof of concept)
     with open("/app/test.gcode", "r") as f:
         data = f.read()
+    resp = make_response(data) 
+    resp.headers['Access-Control-Allow-Origin'] = 'http://172.18.122.122:8080'  # RESTRICT ACCESS LATER
     print("Got gcode.")
-    return(data)
+    return(resp)
+
+
+# put STL
+@app.route('/put_stl', methods=["GET", "POST", "PUT"])
+def put_stl():
+    print("asd;fjadf")
+    print("qrwerq", request.method)
+    bytesdata = request.get_data()
+    print(bytesdata)
+    print("type:", type(bytesdata))
+    stringdata = bytesdata.decode('utf8').replace("'", '"')
+    print(stringdata, ", TYPE:", type(stringdata))
+    jsondata = json.loads(stringdata)
+    print(jsondata, ", TYPE:", type(jsondata))
+    print(jsondata["stl"])
+    # if request.method == "GET":
+    #     print("req is get")
+    #     resp = Response()
+    #     resp.headers["Access-Control-Allow-Origin"] = "*"
+    #     resp.set_data("request.get_data()")
+    #     # print(request.get_json())  # parse as JSON
+    #     return resp
+    if request.method == "POST":
+        resp = Response()
+        resp.headers["Access-Control-Allow-Origin"] = "*"
+        resp.set_data("request.get_json()")
+        # print(request.get_json())  # parse as JSON
+        return resp
+    # white = ["http://172.18.122.122:8080/editor/", "http://172.18.122.122:8080"]
+    # req = request.get_json()
+    # resp = make_response(request.files)
+    # resp.headers['Access-Control-Allow-Origin'] = 'http://172.18.122.122:8080'  # RESTRICT ACCESS LATER
+    # print("Displaying STL...")
+    # if req:
+    #     return(req)
+    # else:
+    #     return("resp")
 
 
 # proof of concept
