@@ -44,8 +44,24 @@ def get_gcode():
 # put STL
 @app.route('/put_stl', methods=["GET", "POST", "PUT"])
 def put_stl():
+    print("---------------------------")
+    # print(request.files['file'].filename) 
+
+    print("---------------------------")
     print("asd;fjadf")
     print("qrwerq", request.method)
+
+    print("TYPE:", type(request.form))
+    print(request.form)
+    print("TYPE:", type(request.files))
+    print(request.files)
+
+    # HANDLING FORMDATA
+    print("STL:", request.files.get("stl"))
+    print("request.get_data.form.get(int)", request.get_data.form.get("int"))
+    print("request.form.get(int)", request.form.get("int"))
+
+
     bytesdata = request.get_data()
     print(bytesdata)
     print("type:", type(bytesdata))
