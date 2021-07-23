@@ -40,7 +40,7 @@ def get_gcode():
     with open(Master_gcode_path, "r") as f:
         data = f.read()
     resp = make_response(data) 
-    resp.headers['Access-Control-Allow-Origin'] = 'http://172.18.122.122:8080'  # RESTRICT ACCESS LATER
+    resp.headers['Access-Control-Allow-Origin'] = '*'  # RESTRICT ACCESS LATER
     print("Got gcode.")
     return(resp)
 
@@ -61,27 +61,32 @@ def put_stl():
 
     if request.method == "POST":  # Slice and write STL
 
+        print("POST action.")
+
         # Save input STL to proper format (default buffer size)
         request.files.get("stl").save(Master_STL_path)
 
         # Slice
-        cli_commands.test_gcode(input=Master_STL_path, output=Master_gcode_path)
+        cli_commands.slice(input=Master_STL_path, output=Master_gcode_path, form=request.form)
 
         # Return an "OK" response
         resp = Response(status=200)
         resp.headers["Access-Control-Allow-Origin"] = "*"
+        print("Returning response to frontend.")
         return resp
 
 
 # proof of concept
 @app.route('/index')
 def index():
+
     subprocess.run("cd Zenger-Writer-Frontend/editor", shell=True)
     return render_template('Zenger-Writer-Frontend/editor/index.html')
 
 
 @app.route('/upload_test', methods=['GET', 'POST'])
 def upload_file():
+
     success = "no file uploaded"
     if request.method == 'POST':
         # check if the post request has the file part
@@ -112,6 +117,7 @@ def upload_file():
 # React page
 @app.route('/react', methods=["GET", "POST"])
 def react():
+
     if request.method == 'POST':
         global STL_path  # variable from outer scope
         STL_path = request.form.get('STL_path')  # access STL_path from form
@@ -120,6 +126,7 @@ def react():
 
 
 if __name__ == "__main__":
+    
     print("Running v1.")  # Use to track code updates across machines/environments. 
     app.run(host='0.0.0.0', port=80)  # , debug=True
     print("Web app terminated.")
