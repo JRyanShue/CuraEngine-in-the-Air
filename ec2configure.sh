@@ -1,5 +1,5 @@
 sudo apt-get -y update  # update Ubuntu
-sudo apt-get -y install git wget autoconf automake libtool curl make g++ unzip cmake python3 python3-dev python3-sip-dev python3-pip nodejs build-essential protobuf-compiler libprotoc-dev libprotobuf-dev  # install immediate dependencies
+sudo apt-get -y install git wget autoconf automake libtool curl make g++ unzip cmake python3 python3-dev python3-sip-dev python3-pip nodejs build-essential protobuf-compiler libprotoc-dev libprotobuf-dev awscli # install immediate dependencies
 sudo wget https://github.com/google/protobuf/releases/download/v3.5.0/protobuf-all-3.5.0.zip
 sudo git clone https://github.com/Ultimaker/libArcus.git
 sudo unzip protobuf-all-3.5.0.zip

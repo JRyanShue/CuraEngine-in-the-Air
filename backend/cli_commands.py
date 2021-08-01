@@ -1,6 +1,7 @@
 
 from flask import request
 import subprocess
+import json
 
 
 def slice(input, output, form):
@@ -24,3 +25,22 @@ def add_setting( shell_command, form, setting_name, setting_val ):
 
     shell_command += "-s " + str(setting_name) + "=" + str(setting_val) + " "
     return shell_command
+
+
+def put_object( object ):
+
+    # Save JSON object to file
+    with open('data.json', 'w') as f:
+        json.dump(object, f)
+
+    shell_command = "aws s3api put-object --bucket zengerwriterbucket --key Users/testman/test.json --body data.json"
+
+    subprocess.run(shell_command, shell=True)
+
+    print("put object.")
+
+
+def get_object():
+
+    print("getting object")
+

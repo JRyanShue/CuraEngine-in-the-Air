@@ -2,3 +2,4 @@ flask
 flask-cors
 werkzeug
 Django==3.2.5
+boto3
