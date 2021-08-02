@@ -1,4 +1,3 @@
-import re
 from botocore.serialize import DEFAULT_TIMESTAMP_FORMAT
 from flask import Flask, render_template, Response, request, flash, url_for, redirect, make_response
 from flask_cors import CORS
@@ -10,6 +9,7 @@ import json
 import boto3
 import base64
 from binascii import a2b_base64
+from web_commands import put_object_s3, ok_allow_response
 
 # initiate class var: STL path
 STL_path = "/app/Test-STLs/5mm_Cube.stl"
@@ -295,6 +295,37 @@ def put_object():
         resp = Response(status=200)
         resp.headers["Access-Control-Allow-Origin"] = "*"
         print("Returning response to frontend.")
+        return resp
+
+
+@app.route('/put_image', methods=["GET", "POST", "PUT"])
+def put_image():
+
+    """
+    Put Image into bucket path. 
+    """
+
+    if request.method == "POST" or request.method == "PUT":
+
+        print(request.method)
+
+        if request.headers.get('path'):
+            path = request.headers.get('path')
+            print("path:", path)
+        else:
+            resp = Response(status=400)
+            return resp
+
+        data = request.files.get('file')
+        print("DATA::", data)
+
+        s3 = boto3.resource('s3')
+        s3.Bucket('zengerwriterbucket').put_object(Key=path, Body=data, ACL="public-read")
+        
+        # Return an "OK" response and allow CORS
+        resp = Response(status=200)
+        resp.headers["Access-Control-Allow-Origin"] = "*"
+        print("Returning response to frontend. put_image")
         return resp
 
 

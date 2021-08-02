@@ -5,4 +5,4 @@ import subprocess  # , os
 This script's function is to run everything that needs to be run.
 """
 
-subprocess.run("python3 ./ZengerCuraEngine-in-the-Air/backend/app.py", shell=True)
+subprocess.run("python3 ./ZengerCuraEngine-in-the-Air/backend/api.py", shell=True)

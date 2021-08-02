@@ -2,6 +2,7 @@ cd /
 
 # Python
 cp -r mnt/c/users/jryan/documents/github/ZengerCuraEngine-in-the-Air/backend app/ZengerCuraEngine-in-the-Air
+cp -r mnt/c/users/jryan/documents/github/ZengerCuraEngine-in-the-Air/main.py app/ZengerCuraEngine-in-the-Air
 
 # JS/HTML (frontend)
 cp -r mnt/c/users/jryan/documents/github/Zenger-Writer-Frontend/zengerwriter/public/editor/editor/js app/Zenger-Writer-Frontend/zengerwriter/public/editor/editor
