@@ -14,6 +14,8 @@ app = Flask( __name__ )
 CORS( app )
 
 bucketname = "zengerwriterbucket"
+s3 = boto3.resource('s3')
+client = boto3.client('s3')
 
 # Default page
 @app.route('/', methods=["GET", "POST"])
@@ -216,6 +218,74 @@ def get_object():
     return json.dumps( { 'name': name, 'url': url } )
 
 
+@app.route( '/move', methods=["POST", "PUT"] )
+def move():
+
+    """
+    Copy object from one bucket to another
+    """
+
+    # if not ( request.headers.get( 'origin_path' ) and request.headers.get( 'destination_path' ) ):
+    #     return Response( status=400 )
+
+    origin_path = request.headers.get( 'origin_path' )
+    destination_path = request.headers.get( 'destination_path' )
+
+    copy_source = {
+        'Bucket': bucketname,
+        'Key': origin_path
+    }
+    s3.meta.client.copy( copy_source, bucketname, destination_path )
+
+    return Response( status=200, headers={ "Access-Control-Allow-Origin": "*" } )
+
+
+@app.route( '/delete', methods=["POST", "PUT", "GET"] )
+def delete():
+
+    """
+    Delete all objects from specified folder
+    """
+
+    path = request.headers.get( 'path' )
+
+    print("Deleting from path:", path)
+
+    delete_files = [
+        "editor.json",
+        "preview.png",
+        "info.json"
+    ]
+
+    for file in delete_files:
+        obj = s3.Object( bucketname, path + file )
+        response = obj.delete()
+        print(response)
+    # response = client.delete_objects(
+    #     Bucket='string',
+    #     Delete={
+    #         'Objects': [
+    #             {
+    #                 'Key': path + 'editor.json'
+    #             },
+    #             {
+    #                 'Key': path + 'preview.png'
+    #             },
+    #             {
+    #                 'Key': path + 'info.json'
+    #             }
+    #         ]
+    #         #, 'Quiet': True|False
+    #     },
+    #     # MFA='string',
+    #     # RequestPayer='requester',
+    #     # BypassGovernanceRetention=True|False,
+    #     ExpectedBucketOwner='613789631585'
+    # )
+
+    return Response( status=200, headers={ "Access-Control-Allow-Origin": "*" } )
+
+
 @app.route( '/put_object', methods=["POST", "PUT"] )
 def put_object():
 
@@ -250,6 +320,30 @@ def put_image():
         data = request.files.get('file')
 
         put_object_s3( request.headers.get( 'path' ), data )
+        
+        return Response( status=200, headers={ "Access-Control-Allow-Origin": "*" } )
+
+
+@app.route('/put_json', methods=["POST", "PUT"])
+def put_json():
+
+    """
+    Put JSON into bucket path. 
+    """
+
+    if request.method == "POST" or request.method == "PUT":
+
+        if not request.headers.get( 'path' ):
+            return Response(status=400)
+
+        print("DATA::", request.data)
+        print("FORM::", request.form.get('json'))
+        print("FILES::", request.files.get('json'))
+        
+
+        json_data = bytes( json.dumps( request.get_json() ).encode( 'UTF-8' ) )
+
+        put_object_s3( request.headers.get( 'path' ), json_data )
         
         return Response( status=200, headers={ "Access-Control-Allow-Origin": "*" } )
 
