@@ -1,7 +1,7 @@
 
 from flask import Flask, render_template, Response, request, make_response
 from flask_cors import CORS
-import cli_commands, json, boto3
+import cli_commands, json, boto3, botocore
 from api_commands import put_object_s3
 
 # initiate class var: STL path
@@ -118,24 +118,66 @@ def pull_object_url():
 
     """
     Puts raw file from S3 into URL and returns the URL. Based on path specified in header input. 
+    If editor doesn't exist at the specified path, initialize a new one. 
     """
 
     if not request.headers['path']:
         return Response(status=400)
     
     path = request.headers['path']
+    editor_path = path + "/editor.json"
+
+    print("pull_object_url")
 
     if request.method == "GET":
+
+        print("Pull object url")
 
         client = boto3.client('s3', region_name='us-east-2')
 
         global bucketname
 
-        # place image at url (url expires after set period for security)
+        try:
+
+            # Try to pull object head (seeing if it exists)
+            client.head_object(Bucket=bucketname, Key=editor_path)
+            print("object found.")
+
+        except botocore.exceptions.ClientError as e:
+
+            print("ERROR")
+
+            if e.response['Error']['Code'] == "404":
+
+                print("OBJECT DOESN'T EXIST")
+                # The object does not exist, so create the default one at the specified address.
+
+                # Initialize editor.json
+                s3 = boto3.resource('s3')
+                copy_source = {
+                    'Bucket': bucketname,
+                    'Key': 'Resources/default_editor.json'
+                }
+                s3.meta.client.copy(copy_source, bucketname, editor_path)
+
+                # Initialize info.json
+                info_path = path + "/info.json"
+                # print("Info path::", info_path)
+                copy_source = {
+                    'Bucket': bucketname,
+                    'Key': 'Resources/default_info.json'
+                }
+                s3.meta.client.copy(copy_source, bucketname, info_path)
+
+            else:
+                print("Something else has gone wrong.")
+        
+        # place editor at url (url expires after set period for security)
         url = client.generate_presigned_url('get_object',
             Params={'Bucket': bucketname,
-                    'Key': path},
+                    'Key': editor_path},
             ExpiresIn=10000)
+        print("Working url:", url)
 
     return json.dumps({'url': url})
 
