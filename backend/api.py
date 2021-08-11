@@ -1,14 +1,18 @@
 
+from re import U
 from flask import Flask, render_template, Response, request, make_response
 from flask_cors import CORS
 import cli_commands, json, boto3, botocore
 from api_commands import put_object_s3
+import splicer.splicer as splicer
 import ast
+import os
 
 # initiate class var: STL path
 STL_path = "/app/Test-STLs/5mm_Cube.stl"
 Master_STL_path = "/app/Master.stl"
 Master_gcode_path = "/app/Master.gcode"
+Holder_gcode_path = "/app/Holder.gcode"
 
 # Initialize the Flask app
 app = Flask( __name__ )
@@ -56,21 +60,90 @@ def splice_queue():
         sliceArr = data["queue"]
 
         print(sliceArr)
-        
-        # for plate in data:
-        #     print(plate)
 
-        # request.files.get("stl").save(Master_STL_path)
-
-        # cli_commands.slice(input=Master_STL_path, output=Master_gcode_path, form=request.form)
-
-        # # save to cloud
-        # if request.form.get("path"):
-
-        #     s3 = boto3.resource('s3')
-        #     s3.meta.client.upload_file(Master_gcode_path, bucketname, request.form.get("path"))
+        # Write spliced gcode to the get_gcode path. Frontend will then pull from that port. 
+        tempFileNames = []  # track the file paths of saved gcodes
+        write_queue( sliceArr=sliceArr, output_path=Master_gcode_path, username="testman", tempFileNames=tempFileNames )
 
         return Response( status=200, headers={ "Access-Control-Allow-Origin": "*" } )
+
+
+# Write entire queue's gcode
+def write_queue( sliceArr, output_path, username, tempFileNames ):
+
+    # sliceArr example: [{'ID': 1628641436013, 'number': '1', 'plateName': 'Reservoir A', 'rootID': '1628639391'}, {'ID': 1628641436949, 'number': '1', 'plateName': 'ResB', 'rootID': '1628641424'}]
+    elementIndex = 0
+    for element in sliceArr: 
+
+        rootID = element["rootID"]
+        number = element["number"]
+        print("index:", elementIndex, "ID:", rootID, "number:", number)
+
+        splice_to_path( elementIndex, username, rootID, int(number), tempFileNames )
+
+        elementIndex += 1
+
+
+    build_master_gcode_to_path( output_path, tempFileNames )
+    clear_old_gcodes( tempFileNames )  # delete all temporarily stored gcode
+
+
+# Splice specific element, save to path
+def splice_to_path( elementIndex, username, rootID, number, tempFileNames ):
+    
+    # if number != 1:
+    # Splice
+    rootGcode = pull_gcode( input_path="Users/" + username + "/projects/" + rootID + "/plate.gcode", output_path=Holder_gcode_path )
+    rootGcode = str(rootGcode)
+    outputPath = "/app/"+str(elementIndex)+".gcode"
+    splicer.splicestr( INPUT_STR=rootGcode, OUTPUT_PATH=outputPath, no_duplicates=number )
+
+    # For tracking
+    tempFileNames.append( outputPath )
+
+
+# Pulls from S3 the given gcode rootID and writes it to the given path
+def pull_gcode( input_path, output_path ):
+
+    print( "Pulling gcode from " + input_path )
+
+    s3 = boto3.resource('s3')
+    global bucketname
+    file = s3.Object( bucketname, input_path )
+
+    output = file.get()[ 'Body' ].read()
+
+    # Return gcode in string format ( so it doesn't have to be saved and read again )
+    return output
+
+
+# Combine saved gcodes into full queue
+def build_master_gcode_to_path( Master_gcode_path, tempFileNames ): 
+
+    print( "building ", end =" ")
+    print(tempFileNames, end=" ")
+    print(" to " + Master_gcode_path )
+
+    master_gcode = ""
+
+    for file in tempFileNames:
+
+        # read file in
+        f = open(file, "r")
+        master_gcode += f.read()
+
+    # Write master file
+    f = open(Master_gcode_path, "w")
+    f.write(master_gcode)
+    f.close()
+
+
+# delete all files in given array
+def clear_old_gcodes( tempFileNames ): 
+
+    for file in tempFileNames:
+
+        os.remove( file )
 
 
 @app.route('/put_stl', methods=["POST"])

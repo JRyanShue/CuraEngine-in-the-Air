@@ -143,3 +143,20 @@ def splice(INPUT, OUTPUT, no_duplicates):
         f.write(i)
     f.close()
 
+
+def splicestr(INPUT_STR, OUTPUT_PATH, no_duplicates):
+    
+    script = INPUT_STR.split('\n')  # get initial gcode, convert to list
+    print("Splicing", no_duplicates, "instances...")
+    add_simultaneous_heating(script)
+    script = add_print_removal(script)
+    script = duplicate(script, no_duplicates-1)
+
+    print("Writing to:", OUTPUT_PATH, "...")
+    f = open(OUTPUT_PATH, "w")
+
+    for i in script:
+        f.write(i)
+
+    f.close()
+
