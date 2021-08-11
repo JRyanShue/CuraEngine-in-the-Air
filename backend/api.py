@@ -3,6 +3,7 @@ from flask import Flask, render_template, Response, request, make_response
 from flask_cors import CORS
 import cli_commands, json, boto3, botocore
 from api_commands import put_object_s3
+import ast
 
 # initiate class var: STL path
 STL_path = "/app/Test-STLs/5mm_Cube.stl"
@@ -40,6 +41,38 @@ def get_gcode():
     return(resp)
 
 
+@app.route('/splice_queue', methods=["POST"])
+def splice_queue():
+
+    """
+    Takes in data for queue; splice it into functional gcode. 
+    """
+
+    if request.method == "POST":  # Get and slice STL, write gcode
+
+        jsonData = request.form.get("data")
+        data = json.loads( json.loads( jsonData ) )
+
+        sliceArr = data["queue"]
+
+        print(sliceArr)
+        
+        # for plate in data:
+        #     print(plate)
+
+        # request.files.get("stl").save(Master_STL_path)
+
+        # cli_commands.slice(input=Master_STL_path, output=Master_gcode_path, form=request.form)
+
+        # # save to cloud
+        # if request.form.get("path"):
+
+        #     s3 = boto3.resource('s3')
+        #     s3.meta.client.upload_file(Master_gcode_path, bucketname, request.form.get("path"))
+
+        return Response( status=200, headers={ "Access-Control-Allow-Origin": "*" } )
+
+
 @app.route('/put_stl', methods=["POST"])
 def put_stl():
 
@@ -54,7 +87,47 @@ def put_stl():
 
         cli_commands.slice(input=Master_STL_path, output=Master_gcode_path, form=request.form)
 
+        # save to cloud
+        if request.form.get("path"):
+
+            s3 = boto3.resource('s3')
+            s3.meta.client.upload_file(Master_gcode_path, bucketname, request.form.get("path"))
+
         return Response( status=200, headers={ "Access-Control-Allow-Origin": "*" } )
+
+
+@app.route('/get_queues', methods=["GET"])
+def get_queues():
+
+    """
+    Get all queue numbers for a given user (username passed via headers)
+    Returns a JSON object with a queue_numbers key
+    Values are the numbers (ID) of all the queues
+    """
+
+    # get username from headers
+    if not request.headers.get('username'):
+        return Response(status=400)
+    
+    username = request.headers['username']
+
+    queues_list = []
+
+    if request.method == "GET":
+
+        client = boto3.client('s3')
+        global bucketname
+        prefix = 'Users/' + username + '/queues/'
+        queues = client.list_objects(Bucket=bucketname, Prefix=prefix, Delimiter='/')
+
+        for queue in queues.get( 'CommonPrefixes' ): 
+            
+            # Grab all queue ID's
+            queue_name = queue[ 'Prefix' ]  # Get raw object name ( on S3, includes entire "path" )
+            queue_number = queue_name[ len( prefix ):len( queue_name )-1 ]  # Get only the queue's ID
+            queues_list.append( queue_number )
+    
+    return json.dumps( { 'queue_numbers': queues_list } )
 
 
 @app.route('/get_projects', methods=["GET"])
@@ -253,6 +326,7 @@ def delete():
 
     delete_files = [
         "editor.json",
+        "plate.gcode",
         "preview.png",
         "info.json"
     ]
