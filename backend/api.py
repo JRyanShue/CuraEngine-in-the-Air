@@ -498,5 +498,5 @@ def put_json():
 if __name__ == "__main__":
 
     print("Running v1.")  # Use to track code updates across machines/environments. 
-    app.run(host='0.0.0.0', port=80)  # , debug=True
+    app.run(host='0.0.0.0', port=8080)  # , debug=True
     print("Web app terminated.")

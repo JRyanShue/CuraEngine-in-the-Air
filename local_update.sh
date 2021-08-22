@@ -7,7 +7,7 @@ cp -r mnt/c/users/jryan/documents/github/ZengerCuraEngine-in-the-Air/main.py app
 # JS/HTML (frontend)
 cp -r mnt/c/users/jryan/documents/github/Zenger-Writer-Frontend/zengerwriter/public/editor/editor/js app/Zenger-Writer-Frontend/zengerwriter/public/editor/editor
 cp -r mnt/c/users/jryan/documents/github/Zenger-Writer-Frontend/zengerwriter/public/editor/editor/index.html app/Zenger-Writer-Frontend/zengerwriter/public/editor/editor
-cp -r mnt/c/users/jryan/documents/github/Zenger-Writer-Frontend/package.json app/Zenger-Writer-Frontend
+cp -r mnt/c/users/jryan/documents/github/Zenger-Writer-Frontend/zengerwriter/package.json app/Zenger-Writer-Frontend/zengerwriter
 cp -r mnt/c/users/jryan/documents/github/Zenger-Writer-Frontend/zengerwriter/public/editor/editor/index.html app/Zenger-Writer-Frontend/zengerwriter/public/editor/editor
 
 # CSS

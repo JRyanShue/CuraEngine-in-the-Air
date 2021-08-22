@@ -1,5 +1,4 @@
-import subprocess  # , os
-# import threading
+import subprocess
 
 """
 This script's function is to run everything that needs to be run.
