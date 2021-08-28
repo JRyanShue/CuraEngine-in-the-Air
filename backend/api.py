@@ -405,7 +405,7 @@ def delete():
     ]
 
     for file in delete_files:
-        print("Deleting object: " + bucketname + "/" + path + file)
+        print("Deleting object: " + bucketname + "/" + path + file, flush=True)
         obj = s3.Object( bucketname, path + file )
         response = obj.delete()
         print(response)
