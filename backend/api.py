@@ -377,6 +377,8 @@ def move():
     origin_path = request.headers.get( 'origin_path' )
     destination_path = request.headers.get( 'destination_path' )
 
+    print( "Copying from: " + origin_path + " to " + destination_path )
+
     copy_source = {
         'Bucket': bucketname,
         'Key': origin_path
