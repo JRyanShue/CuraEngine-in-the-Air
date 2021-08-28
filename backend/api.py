@@ -395,6 +395,7 @@ def delete():
 
     path = request.headers.get( 'path' )
 
+    print('delete')
     print("Deleting from path:", path)
 
     delete_files = [
