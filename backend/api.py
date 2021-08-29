@@ -364,6 +364,27 @@ def get_object():
     return json.dumps( { 'name': name, 'url': url } )
 
 
+@app.route('/get_info', methods=["GET"])
+def get_info():
+
+    """
+    Returns an info dict about the editor. 
+    """
+
+    if not request.headers[ 'path' ]:
+        return Response(status=400)
+
+    path = request.headers[ 'path' ]
+
+    if request.method == "GET":
+
+        s3 = boto3.resource( 's3' )
+        object = s3.Object( bucketname, path )
+        dict = json.loads( object.get()[ 'Body' ].read() )
+
+    return json.dumps( dict )
+
+
 @app.route( '/move', methods=["POST", "PUT"] )
 def move():
 
