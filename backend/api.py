@@ -166,6 +166,8 @@ def put_stl():
             s3 = boto3.resource('s3')
             s3.meta.client.upload_file(Master_gcode_path, bucketname, request.form.get("path"))
 
+            print("PATH")
+
         return Response( status=200, headers={ "Access-Control-Allow-Origin": "*" } )
 
 
